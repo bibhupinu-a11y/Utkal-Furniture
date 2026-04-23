@@ -1,0 +1,74 @@
+[
+  {
+    "id": "p1",
+    "name": "Velvet Cloud Sofa",
+    "cat": "sofa",
+    "price": 45999,
+    "original": 59999,
+    "desc": "3-seater premium velvet sofa with solid oak legs. Cloud-like comfort.",
+    "badge": "Bestseller",
+    "img": null,
+    "stock": 10,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p2",
+    "name": "Nordic Oak Dining Table",
+    "cat": "table",
+    "price": 28500,
+    "original": null,
+    "desc": "Solid oak dining table seats 6. Clean Scandinavian lines.",
+    "badge": "New",
+    "img": null,
+    "stock": 5,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p3",
+    "name": "Rattan Lounge Chair",
+    "cat": "chair",
+    "price": 12800,
+    "original": 16000,
+    "desc": "Handwoven natural rattan with cushioned seat. Indoor & outdoor.",
+    "badge": "Sale",
+    "img": null,
+    "stock": 12,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p4",
+    "name": "Walnut Storage Cabinet",
+    "cat": "storage",
+    "price": 34200,
+    "original": null,
+    "desc": "4-door walnut veneer cabinet. Ample storage with soft-close hinges.",
+    "badge": null,
+    "img": null,
+    "stock": 7,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p5",
+    "name": "Linen Platform Bed",
+    "cat": "bed",
+    "price": 52000,
+    "original": 68000,
+    "desc": "King size platform bed in natural linen. Includes 2 bedside drawers.",
+    "badge": "Hot",
+    "img": null,
+    "stock": 4,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p6",
+    "name": "Marble Top Coffee Table",
+    "cat": "table",
+    "price": 18600,
+    "original": null,
+    "desc": "White Carrara marble top with brushed brass frame. 100×55cm.",
+    "badge": null,
+    "img": null,
+    "stock": 8,
+    "createdAt": "2026-04-23T09:00:08.454Z"
+  }
+]
