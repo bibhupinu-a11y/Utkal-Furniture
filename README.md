@@ -1,4 +1,4 @@
-# 🛋️ Maison.co — Furniture E-commerce
+# 🛋️ Utkal Furniture
 
 Full-stack furniture store with Node.js backend and **Razorpay** payment gateway.
 
