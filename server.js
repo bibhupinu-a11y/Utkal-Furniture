@@ -1,5 +1,5 @@
 /**
- * Maison.co — Furniture E-commerce Backend
+ * Utkal Furniture Backend
  * Node.js + Express + Razorpay Payment Gateway
  */
 
