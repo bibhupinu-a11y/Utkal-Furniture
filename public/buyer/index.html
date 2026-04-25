@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funiture — Luxury Furniture</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0F0D0A;--paper:#FDFAF5;--warm:#F5EFE6;--sand:#E8DDD0;
+  --copper:#A0522D;--rust:#8B3A1A;--mist:#9E9087;--white:#FFFFFF;
+  --border:#DDD5CA;--green:#1E5C3A;--red:#8B2020;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
+button,input,select,textarea{font-family:'Jost',sans-serif}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:200;background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--white);letter-spacing:4px;text-transform:uppercase}
+.logo em{color:#C9943A;font-style:normal}
+.header-right{display:flex;align-items:center;gap:1.5rem}
+.nav-link{color:rgba(255,255,255,0.6);font-size:13px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color 0.2s}
+.nav-link:hover,.nav-link.active{color:var(--white)}
+.cart-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:2px;padding:8px 18px;color:var(--white);font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
+.cart-pill:hover{background:rgba(255,255,255,0.14)}
+.cart-pill .badge{background:#C9943A;color:var(--ink);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
+
+/* ── HERO ── */
+.hero{height:480px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,0.012) 40px,rgba(255,255,255,0.012) 80px)}
+.hero-sub{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;font-weight:300}
+.hero h1{font-size:64px;font-weight:300;color:var(--white);line-height:1.1;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:#C9943A}
+.hero-desc{color:rgba(255,255,255,0.45);font-size:15px;font-weight:300;letter-spacing:0.5px;max-width:480px}
+
+/* ── FILTERS ── */
+.filter-strip{background:var(--white);border-bottom:1px solid var(--border);padding:0 3rem;display:flex;align-items:center;gap:0;overflow-x:auto}
+.filter-tab{background:none;border:none;border-bottom:2px solid transparent;padding:16px 20px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--mist);cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.filter-tab:hover{color:var(--ink)}
+.filter-tab.active{color:var(--ink);border-bottom-color:var(--copper)}
+
+/* ── GRID ── */
+.products-section{padding:3rem}
+.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:2rem}
+.section-header h2{font-size:28px;font-weight:300}
+.section-header span{font-size:13px;color:var(--mist)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem}
+.card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(15,13,10,0.1)}
+.card-img{height:220px;background:var(--warm);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.card:hover .card-img img{transform:scale(1.05)}
+.card-img .emoji{font-size:72px}
+.badge-tag{position:absolute;top:12px;right:12px;background:var(--ink);color:var(--white);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px}
+.card-body{padding:1.25rem}
+.card-cat{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mist);margin-bottom:6px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;line-height:1.25;margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--mist);line-height:1.6;margin-bottom:1rem}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.price-block{}
+.price-now{font-size:20px;font-weight:400;color:var(--copper)}
+.price-was{font-size:12px;color:var(--mist);text-decoration:line-through;margin-left:6px}
+.stock-tag{font-size:11px;color:var(--red);margin-top:2px}
+.btn-add{background:var(--ink);color:var(--white);border:none;padding:10px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.2s}
+.btn-add:hover{background:var(--copper)}
+.btn-oos{background:var(--sand);color:var(--mist);border:none;padding:10px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:not-allowed}
+.no-products{text-align:center;padding:4rem;color:var(--mist);font-size:15px;grid-column:1/-1}
+
+/* ── SIDE CART ── */
+.overlay{position:fixed;inset:0;background:rgba(15,13,10,0.5);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:480px;max-width:95vw;background:var(--white);z-index:400;transform:translateX(100%);transition:transform 0.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.drawer-head{background:var(--ink);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.drawer-head h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--white);font-weight:300;letter-spacing:2px}
+.close-drawer{background:none;border:none;color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;line-height:1}
+.close-drawer:hover{color:var(--white)}
+.drawer-body{flex:1;overflow-y:auto;padding:1.5rem}
+.cart-empty-state{text-align:center;padding:3rem 1rem;color:var(--mist)}
+.cart-empty-state .empty-icon{font-size:56px;margin-bottom:1rem;display:block}
+.cart-empty-state p{font-size:15px;margin-bottom:1.5rem}
+.ci{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);align-items:center}
+.ci-thumb{width:64px;height:64px;background:var(--warm);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
+.ci-thumb img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-family:'Cormorant Garamond',serif;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-price{font-size:13px;color:var(--copper);margin-top:2px}
+.ci-qty{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qb{background:none;border:1px solid var(--border);width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all 0.15s}
+.qb:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.qv{font-size:14px;min-width:18px;text-align:center}
+.ci-del{background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px;margin-left:4px}
+.ci-del:hover{color:var(--red)}
+.ci-total{font-size:16px;font-weight:400;color:var(--ink);white-space:nowrap}
+.drawer-foot{border-top:1px solid var(--border);padding:1.5rem;flex-shrink:0}
+.summary-lines{margin-bottom:1rem}
+.sl{display:flex;justify-content:space-between;font-size:13px;color:var(--mist);margin-bottom:6px}
+.sl.total{font-size:17px;color:var(--ink);font-weight:400;border-top:1px solid var(--border);padding-top:10px;margin-top:10px}
+.addr-block{margin-bottom:1rem}
+.addr-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.addr-grid .full{grid-column:1/-1}
+.ai{width:100%;border:1px solid var(--border);padding:8px 10px;font-size:13px;color:var(--ink);background:var(--paper);transition:border 0.2s}
+.ai:focus{outline:none;border-color:var(--copper)}
+.pay-btn{width:100%;background:var(--ink);color:var(--white);border:none;padding:14px;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover:not(:disabled){background:var(--copper)}
+.pay-btn:disabled{opacity:0.5;cursor:not-allowed}
+.secure-line{text-align:center;font-size:11px;color:var(--mist);margin-top:8px;letter-spacing:0.5px}
+
+/* ── SUCCESS ── */
+.success-screen{display:none;position:fixed;inset:0;background:var(--paper);z-index:500;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem}
+.success-screen.show{display:flex}
+.success-icon{font-size:80px;margin-bottom:1.5rem}
+.success-screen h2{font-size:40px;font-weight:300;margin-bottom:8px;color:var(--green)}
+.success-screen p{color:var(--mist);font-size:15px;max-width:400px;margin-bottom:2rem}
+.success-details{background:var(--warm);border:1px solid var(--border);padding:1.25rem 2rem;margin-bottom:2rem;text-align:left;font-size:13px;line-height:2.2;min-width:320px}
+.success-details strong{color:var(--ink)}
+.btn-continue{background:var(--ink);color:var(--white);border:none;padding:14px 36px;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+
+/* ── LOADING ── */
+.loader{display:none;position:fixed;inset:0;background:rgba(15,13,10,0.6);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--white);font-size:13px;letter-spacing:1px}
+.loader.show{display:flex}
+.spin{width:36px;height:36px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--white);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--white);padding:12px 24px;font-size:13px;letter-spacing:0.5px;z-index:700;opacity:0;transition:all 0.3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{background:var(--green)}
+.toast.warn{background:var(--rust)}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:rgba(255,255,255,0.35);text-align:center;padding:2rem;font-size:12px;letter-spacing:1px;margin-top:4rem}
+footer a{color:rgba(255,255,255,0.5);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Funiture<em>.</em>CO</div>
+  <div class="header-right">
+    <button class="nav-link active" onclick="scrollToProducts()">Collection</button>
+    <button class="nav-link" onclick="openCart()">
+      Cart
+      <span id="cartCount" style="display:inline-flex;align-items:center;justify-content:center;background:#C9943A;color:#0F0D0A;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:500;margin-left:6px">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <p class="hero-sub">New Collection 2025</p>
+  <h1>Live with <em>intention</em></h1>
+  <p class="hero-desc">Each piece is chosen for beauty, craft, and the way it transforms a room into a home.</p>
+</section>
+
+<div class="filter-strip" id="filterStrip">
+  <button class="filter-tab active" onclick="filterBy('all',this)">All Pieces</button>
+  <button class="filter-tab" onclick="filterBy('sofa',this)">Sofas</button>
+  <button class="filter-tab" onclick="filterBy('table',this)">Tables</button>
+  <button class="filter-tab" onclick="filterBy('chair',this)">Chairs</button>
+  <button class="filter-tab" onclick="filterBy('storage',this)">Storage</button>
+  <button class="filter-tab" onclick="filterBy('bed',this)">Beds</button>
+</div>
+
+<section class="products-section" id="productsSection">
+  <div class="section-header">
+    <h2>The Collection</h2>
+    <span id="productCount">Loading…</span>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <div class="no-products">Loading collection…</div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Funiture.co &nbsp;·&nbsp; Crafted furniture for modern living &nbsp;·&nbsp;
+  <a href="http://localhost:3001" target="_blank">Seller Portal →</a>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Your Cart</h3>
+    <button class="close-drawer" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="summary-lines" id="summaryLines"></div>
+    <div class="addr-block">
+      <div class="addr-title">Delivery Address</div>
+      <div class="addr-grid">
+        <input class="ai full" id="addrName" placeholder="Full Name">
+        <input class="ai full" id="addrPhone" placeholder="Phone Number">
+        <input class="ai full" id="addrLine1" placeholder="Address Line 1">
+        <input class="ai" id="addrCity" placeholder="City">
+        <input class="ai" id="addrPin" placeholder="PIN Code">
+        <input class="ai full" id="addrState" placeholder="State">
+      </div>
+    </div>
+    <button class="pay-btn" id="payBtn" onclick="initiatePayment()">
+      <span>Pay with Razorpay</span>
+    </button>
+    <div class="secure-line">🔒 Secured by Razorpay · 256-bit SSL</div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2>Order Confirmed</h2>
+  <p>Your furniture is on its way. Expect delivery in 5–7 business days.</p>
+  <div class="success-details" id="successDetails"></div>
+  <button class="btn-continue" onclick="dismissSuccess()">Continue Shopping</button>
+</div>
+
+<!-- LOADER -->
+<div class="loader" id="loader"><div class="spin"></div><span id="loaderMsg">Processing…</span></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const EMOJIS={sofa:'🛋️',table:'🪑',chair:'💺',storage:'🗄️',bed:'🛏️',other:'🪴'};
+const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+let products=[], cart=JSON.parse(localStorage.getItem('Funiture_cart')||'[]'), currentFilter='all';
+
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type==='success'?'ok':type==='warning'?'warn':'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+function showLoader(msg='Processing…'){document.getElementById('loaderMsg').textContent=msg;document.getElementById('loader').classList.add('show')}
+function hideLoader(){document.getElementById('loader').classList.remove('show')}
+function saveCart(){localStorage.setItem('Funiture_cart',JSON.stringify(cart))}
+function updateCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0)}
+
+async function apiFetch(url,opts={}){
+  const r=await fetch(url,opts);
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.message||'Error');
+  return d;
+}
+
+async function loadProducts(){
+  const grid=document.getElementById('productsGrid');
+  try{
+    const url=currentFilter==='all'?'/api/products':`/api/products?cat=${currentFilter}`;
+    const {products:list}=await apiFetch(url);
+    products=list;
+    document.getElementById('productCount').textContent=list.length+' pieces';
+    if(!list.length){grid.innerHTML='<div class="no-products">No pieces in this category yet.</div>';return;}
+    grid.innerHTML=list.map(p=>`
+      <div class="card">
+        <div class="card-img">
+          ${p.img?`<img src="${p.img}" alt="${p.name}">`:`<div class="emoji">${EMOJIS[p.cat]||'🪑'}</div>`}
+          ${p.badge?`<div class="badge-tag">${p.badge}</div>`:''}
+        </div>
+        <div class="card-body">
+          <div class="card-cat">${p.cat}</div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-desc">${p.desc}</div>
+          <div class="card-footer">
+            <div class="price-block">
+              <span class="price-now">${fmt(p.price)}</span>
+              ${p.original?`<span class="price-was">${fmt(p.original)}</span>`:''}
+              ${p.stock<4&&p.stock>0?`<div class="stock-tag">Only ${p.stock} left</div>`:''}
+            </div>
+            ${p.stock>0
+              ?`<button class="btn-add" onclick="addToCart('${p.id}')">Add to Cart</button>`
+              :`<button class="btn-oos">Sold Out</button>`}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }catch(e){
+    grid.innerHTML=`<div class="no-products">Could not load products. Is the server running?</div>`;
+  }
+}
+
+function filterBy(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  loadProducts();
+}
+function scrollToProducts(){document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})}
+
+function addToCart(id){
+  const p=products.find(x=>x.id===id); if(!p) return;
+  const ex=cart.find(x=>x.id===id);
+  ex?ex.qty++:cart.push({id:p.id,name:p.name,cat:p.cat,price:p.price,img:p.img,qty:1});
+  saveCart(); updateCount();
+  toast('Added: '+p.name,'success');
+}
+
+function openCart(){
+  renderDrawer();
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+function renderDrawer(){
+  const body=document.getElementById('drawerBody');
+  const foot=document.getElementById('drawerFoot');
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty-state"><span class="empty-icon">🛋️</span><p>Your cart is empty.</p><button class="pay-btn" style="width:auto;padding:12px 28px" onclick="closeCart()">Browse Collection</button></div>`;
+    foot.style.display='none'; return;
+  }
+  body.innerHTML=cart.map(item=>`
+    <div class="ci">
+      <div class="ci-thumb">${item.img?`<img src="${item.img}">`:(EMOJIS[item.cat]||'🪑')}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">${fmt(item.price)} each</div>
+        <div class="ci-qty">
+          <button class="qb" onclick="changeQty('${item.id}',-1)">−</button>
+          <span class="qv">${item.qty}</span>
+          <button class="qb" onclick="changeQty('${item.id}',1)">+</button>
+          <button class="ci-del" onclick="removeItem('${item.id}')">✕</button>
+        </div>
+      </div>
+      <div class="ci-total">${fmt(item.price*item.qty)}</div>
+    </div>
+  `).join('');
+  const sub=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const del=sub>50000?0:599; const tax=Math.round(sub*0.18);
+  document.getElementById('summaryLines').innerHTML=`
+    <div class="sl"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+    <div class="sl"><span>Delivery</span><span>${del===0?'FREE':fmt(del)}</span></div>
+    <div class="sl"><span>GST (18%)</span><span>${fmt(tax)}</span></div>
+    <div class="sl total"><span>Total</span><span>${fmt(sub+del+tax)}</span></div>
+  `;
+  foot.style.display='block';
+}
+
+function changeQty(id,d){
+  const item=cart.find(x=>x.id===id); if(!item) return;
+  item.qty+=d;
+  if(item.qty<1) cart=cart.filter(x=>x.id!==id);
+  saveCart(); updateCount(); renderDrawer();
+}
+function removeItem(id){cart=cart.filter(x=>x.id!==id);saveCart();updateCount();renderDrawer();}
+
+async function initiatePayment(){
+  if(!cart.length){toast('Cart is empty','warning');return;}
+  const name=document.getElementById('addrName').value.trim();
+  const phone=document.getElementById('addrPhone').value.trim();
+  const line1=document.getElementById('addrLine1').value.trim();
+  const city=document.getElementById('addrCity').value.trim();
+  const pin=document.getElementById('addrPin').value.trim();
+  const state=document.getElementById('addrState').value.trim();
+  if(!name||!phone||!line1||!city||!pin||!state){toast('Please fill in your delivery address','warning');return;}
+  showLoader('Creating order…');
+  try{
+    const data=await apiFetch('/api/payment/create-order',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({cartItems:cart.map(x=>({id:x.id,qty:x.qty})),address:{name,phone,line1,city,pin,state}})
+    });
+    hideLoader();
+    const rzp=new window.Razorpay({
+      key:data.keyId, amount:data.amount, currency:data.currency,
+      name:'Funiture.co', description:'Furniture Order', order_id:data.orderId,
+      handler:async function(response){
+        showLoader('Verifying payment…');
+        try{
+          await apiFetch('/api/payment/verify',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({razorpay_order_id:response.razorpay_order_id,razorpay_payment_id:response.razorpay_payment_id,razorpay_signature:response.razorpay_signature})
+          });
+          hideLoader();
+          cart=[];saveCart();updateCount();closeCart();
+          document.getElementById('successDetails').innerHTML=`
+            <strong>Order ID:</strong> ${response.razorpay_order_id.replace('order_','').substring(0,10).toUpperCase()}<br>
+            <strong>Payment ID:</strong> ${response.razorpay_payment_id}<br>
+            <strong>Delivery to:</strong> ${name}, ${city}, ${state}<br>
+            <strong>Estimated:</strong> 5–7 business days
+          `;
+          document.getElementById('successScreen').classList.add('show');
+        }catch(e){hideLoader();toast('Verification failed: '+e.message,'warning');}
+      },
+      prefill:{name,contact:phone},
+      theme:{color:'#A0522D'},
+      modal:{ondismiss:async()=>{
+        await fetch('/api/payment/failed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({razorpay_order_id:data.orderId})});
+        toast('Payment cancelled','warning');
+      }}
+    });
+    rzp.on('payment.failed',async function(r){
+      await fetch('/api/payment/failed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({razorpay_order_id:data.orderId,error:r.error})});
+      toast('Payment failed: '+r.error.description,'warning');
+    });
+    rzp.open();
+  }catch(e){hideLoader();toast('Order error: '+e.message,'warning');}
+}
+
+function dismissSuccess(){
+  document.getElementById('successScreen').classList.remove('show');
+  loadProducts();
+}
+
+updateCount();
+loadProducts();
+</script>
+</body>
+</html>
