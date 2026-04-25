@@ -3,776 +3,410 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maison.co — Furniture Store</title>
-<!-- Razorpay Checkout SDK -->
+<title>Funiture — Luxury Furniture</title>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cream:#FAF7F2;--dark:#1C1A17;--brown:#8B5E3C;--gold:#C9943A;--light:#F0EBE3;
-  --white:#FFFFFF;--gray:#9B9590;--border:#E2DDD6;--green:#2D6A4F;--red:#C0392B;
+  --ink:#0F0D0A;--paper:#FDFAF5;--warm:#F5EFE6;--sand:#E8DDD0;
+  --copper:#A0522D;--rust:#8B3A1A;--mist:#9E9087;--white:#FFFFFF;
+  --border:#DDD5CA;--green:#1E5C3A;--red:#8B2020;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
-h1,h2,h3,h4{font-family:'Playfair Display',serif}
-button{cursor:pointer;font-family:'DM Sans',sans-serif}
-input,textarea,select{font-family:'DM Sans',sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
+button,input,select,textarea{font-family:'Jost',sans-serif}
 
-/* NAV */
-nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
-.nav-logo{color:var(--white);font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:1px}
-.nav-logo span{color:var(--gold)}
-.nav-tabs{display:flex;gap:0}
-.nav-tab{background:none;border:none;color:var(--gray);padding:8px 16px;font-size:14px;font-weight:500;border-radius:6px;transition:all 0.2s}
-.nav-tab:hover{color:var(--white)}
-.nav-tab.active{color:var(--gold);background:rgba(201,148,58,0.1)}
-.nav-right{display:flex;align-items:center;gap:12px}
-.cart-btn{background:var(--gold);color:var(--dark);border:none;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
-.cart-count{background:var(--dark);color:var(--gold);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:200;background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--white);letter-spacing:4px;text-transform:uppercase}
+.logo em{color:#C9943A;font-style:normal}
+.header-right{display:flex;align-items:center;gap:1.5rem}
+.nav-link{color:rgba(255,255,255,0.6);font-size:13px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color 0.2s}
+.nav-link:hover,.nav-link.active{color:var(--white)}
+.cart-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:2px;padding:8px 18px;color:var(--white);font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
+.cart-pill:hover{background:rgba(255,255,255,0.14)}
+.cart-pill .badge{background:#C9943A;color:var(--ink);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
 
-/* PAGES */
-.page{display:none;min-height:calc(100vh - 64px)}
-.page.active{display:block}
+/* ── HERO ── */
+.hero{height:480px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,0.012) 40px,rgba(255,255,255,0.012) 80px)}
+.hero-sub{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;font-weight:300}
+.hero h1{font-size:64px;font-weight:300;color:var(--white);line-height:1.1;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:#C9943A}
+.hero-desc{color:rgba(255,255,255,0.45);font-size:15px;font-weight:300;letter-spacing:0.5px;max-width:480px}
 
-/* SHOP */
-.hero{background:var(--dark);padding:4rem 2rem;text-align:center}
-.hero h1{color:var(--white);font-size:42px;margin-bottom:12px}
-.hero h1 span{color:var(--gold)}
-.hero p{color:var(--gray);font-size:16px}
-.filter-bar{background:var(--white);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.filter-btn{background:none;border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:13px;color:var(--dark);transition:all 0.2s}
-.filter-btn:hover,.filter-btn.active{background:var(--dark);color:var(--white);border-color:var(--dark)}
-.filter-label{font-size:13px;color:var(--gray);font-weight:500}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;padding:2rem}
-.product-card{background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--border);transition:transform 0.2s,box-shadow 0.2s}
-.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(28,26,23,0.1)}
-.product-img{height:200px;background:var(--light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.product-img img{width:100%;height:100%;object-fit:cover}
-.product-img-placeholder{font-size:64px}
-.product-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:var(--dark);font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}
-.product-info{padding:1rem}
-.product-cat{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.product-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.3}
-.product-desc{font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.5}
-.product-footer{display:flex;align-items:center;justify-content:space-between}
-.product-price{font-size:20px;font-weight:700;color:var(--brown)}
-.product-price s{font-size:13px;font-weight:400;color:var(--gray);margin-left:4px}
-.add-cart-btn{background:var(--dark);color:var(--white);border:none;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:500;transition:background 0.2s}
-.add-cart-btn:hover{background:var(--brown)}
-.out-of-stock{background:var(--gray);color:var(--white);border:none;padding:8px 16px;border-radius:6px;font-size:13px;cursor:not-allowed}
-.stock-info{font-size:11px;color:var(--gray);margin-top:6px}
-.stock-low{color:var(--red)}
+/* ── FILTERS ── */
+.filter-strip{background:var(--white);border-bottom:1px solid var(--border);padding:0 3rem;display:flex;align-items:center;gap:0;overflow-x:auto}
+.filter-tab{background:none;border:none;border-bottom:2px solid transparent;padding:16px 20px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--mist);cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.filter-tab:hover{color:var(--ink)}
+.filter-tab.active{color:var(--ink);border-bottom-color:var(--copper)}
 
-/* SELLER */
-.seller-layout{display:grid;grid-template-columns:1fr 1.4fr;gap:0;min-height:calc(100vh - 64px)}
-.seller-list{background:var(--white);border-right:1px solid var(--border);padding:1.5rem;overflow-y:auto;max-height:calc(100vh - 64px)}
-.seller-form-area{padding:1.5rem;overflow-y:auto;max-height:calc(100vh - 64px)}
-.section-title{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
-.seller-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all 0.2s}
-.seller-item:hover,.seller-item.selected{background:var(--light);border-color:var(--brown)}
-.seller-item-thumb{width:52px;height:52px;border-radius:8px;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden}
-.seller-item-thumb img{width:100%;height:100%;object-fit:cover}
-.seller-item-info{flex:1;min-width:0}
-.seller-item-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.seller-item-price{font-size:13px;color:var(--brown);font-weight:600}
-.seller-item-actions{display:flex;gap:6px}
-.icon-btn{background:none;border:1px solid var(--border);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s}
-.icon-btn:hover{background:var(--red);border-color:var(--red);color:var(--white)}
-.icon-btn.edit:hover{background:var(--brown);border-color:var(--brown);color:var(--white)}
-.add-new-btn{width:100%;background:none;border:2px dashed var(--border);padding:12px;border-radius:8px;color:var(--gray);font-size:14px;margin-bottom:1rem;transition:all 0.2s}
-.add-new-btn:hover{border-color:var(--brown);color:var(--brown)}
+/* ── GRID ── */
+.products-section{padding:3rem}
+.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:2rem}
+.section-header h2{font-size:28px;font-weight:300}
+.section-header span{font-size:13px;color:var(--mist)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem}
+.card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(15,13,10,0.1)}
+.card-img{height:220px;background:var(--warm);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.card:hover .card-img img{transform:scale(1.05)}
+.card-img .emoji{font-size:72px}
+.badge-tag{position:absolute;top:12px;right:12px;background:var(--ink);color:var(--white);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px}
+.card-body{padding:1.25rem}
+.card-cat{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mist);margin-bottom:6px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;line-height:1.25;margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--mist);line-height:1.6;margin-bottom:1rem}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.price-block{}
+.price-now{font-size:20px;font-weight:400;color:var(--copper)}
+.price-was{font-size:12px;color:var(--mist);text-decoration:line-through;margin-left:6px}
+.stock-tag{font-size:11px;color:var(--red);margin-top:2px}
+.btn-add{background:var(--ink);color:var(--white);border:none;padding:10px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.2s}
+.btn-add:hover{background:var(--copper)}
+.btn-oos{background:var(--sand);color:var(--mist);border:none;padding:10px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:not-allowed}
+.no-products{text-align:center;padding:4rem;color:var(--mist);font-size:15px;grid-column:1/-1}
 
-/* FORM */
-.form-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
-.form-row{margin-bottom:1rem}
-.form-label{display:block;font-size:13px;font-weight:500;color:var(--gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-.form-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--dark);background:var(--cream);transition:border 0.2s}
-.form-input:focus{outline:none;border-color:var(--brown);background:var(--white)}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
-.upload-zone{border:2px dashed var(--border);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
-.upload-zone:hover{border-color:var(--brown);background:var(--light)}
-.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-icon{font-size:32px;margin-bottom:8px}
-.upload-text{font-size:13px;color:var(--gray)}
-.upload-text strong{color:var(--brown)}
-.upload-preview{width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px}
-.submit-btn{width:100%;background:var(--dark);color:var(--white);border:none;padding:12px;border-radius:8px;font-size:15px;font-weight:500;transition:background 0.2s}
-.submit-btn:hover:not(:disabled){background:var(--brown)}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed}
-.delete-btn{width:100%;background:none;border:1px solid var(--red);color:var(--red);padding:10px;border-radius:8px;font-size:14px;margin-top:8px;transition:all 0.2s}
-.delete-btn:hover{background:var(--red);color:var(--white)}
+/* ── SIDE CART ── */
+.overlay{position:fixed;inset:0;background:rgba(15,13,10,0.5);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:480px;max-width:95vw;background:var(--white);z-index:400;transform:translateX(100%);transition:transform 0.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.drawer-head{background:var(--ink);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.drawer-head h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--white);font-weight:300;letter-spacing:2px}
+.close-drawer{background:none;border:none;color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;line-height:1}
+.close-drawer:hover{color:var(--white)}
+.drawer-body{flex:1;overflow-y:auto;padding:1.5rem}
+.cart-empty-state{text-align:center;padding:3rem 1rem;color:var(--mist)}
+.cart-empty-state .empty-icon{font-size:56px;margin-bottom:1rem;display:block}
+.cart-empty-state p{font-size:15px;margin-bottom:1.5rem}
+.ci{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);align-items:center}
+.ci-thumb{width:64px;height:64px;background:var(--warm);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
+.ci-thumb img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-family:'Cormorant Garamond',serif;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-price{font-size:13px;color:var(--copper);margin-top:2px}
+.ci-qty{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qb{background:none;border:1px solid var(--border);width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all 0.15s}
+.qb:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.qv{font-size:14px;min-width:18px;text-align:center}
+.ci-del{background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px;margin-left:4px}
+.ci-del:hover{color:var(--red)}
+.ci-total{font-size:16px;font-weight:400;color:var(--ink);white-space:nowrap}
+.drawer-foot{border-top:1px solid var(--border);padding:1.5rem;flex-shrink:0}
+.summary-lines{margin-bottom:1rem}
+.sl{display:flex;justify-content:space-between;font-size:13px;color:var(--mist);margin-bottom:6px}
+.sl.total{font-size:17px;color:var(--ink);font-weight:400;border-top:1px solid var(--border);padding-top:10px;margin-top:10px}
+.addr-block{margin-bottom:1rem}
+.addr-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.addr-grid .full{grid-column:1/-1}
+.ai{width:100%;border:1px solid var(--border);padding:8px 10px;font-size:13px;color:var(--ink);background:var(--paper);transition:border 0.2s}
+.ai:focus{outline:none;border-color:var(--copper)}
+.pay-btn{width:100%;background:var(--ink);color:var(--white);border:none;padding:14px;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover:not(:disabled){background:var(--copper)}
+.pay-btn:disabled{opacity:0.5;cursor:not-allowed}
+.secure-line{text-align:center;font-size:11px;color:var(--mist);margin-top:8px;letter-spacing:0.5px}
 
-/* CART */
-.cart-layout{display:grid;grid-template-columns:1fr 360px;gap:1.5rem;padding:2rem;max-width:1100px;margin:0 auto}
-.cart-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1rem;display:flex;gap:1rem;margin-bottom:1rem;align-items:center}
-.cart-item-img{width:72px;height:72px;border-radius:8px;background:var(--light);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden}
-.cart-item-img img{width:100%;height:100%;object-fit:cover}
-.cart-item-info{flex:1}
-.cart-item-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:4px}
-.cart-item-cat{font-size:12px;color:var(--gray);margin-bottom:8px}
-.qty-ctrl{display:flex;align-items:center;gap:8px}
-.qty-btn{background:var(--light);border:1px solid var(--border);width:28px;height:28px;border-radius:6px;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-.qty-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
-.qty-val{font-size:15px;font-weight:500;min-width:20px;text-align:center}
-.cart-item-price{font-size:18px;font-weight:700;color:var(--brown);white-space:nowrap}
-.cart-remove{background:none;border:none;color:var(--gray);font-size:18px;padding:4px;margin-left:4px;transition:color 0.2s}
-.cart-remove:hover{color:var(--red)}
-.cart-empty{text-align:center;padding:4rem 2rem;color:var(--gray)}
-.cart-empty-icon{font-size:64px;margin-bottom:1rem}
-.cart-empty p{font-size:16px;margin-bottom:1.5rem}
+/* ── SUCCESS ── */
+.success-screen{display:none;position:fixed;inset:0;background:var(--paper);z-index:500;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem}
+.success-screen.show{display:flex}
+.success-icon{font-size:80px;margin-bottom:1.5rem}
+.success-screen h2{font-size:40px;font-weight:300;margin-bottom:8px;color:var(--green)}
+.success-screen p{color:var(--mist);font-size:15px;max-width:400px;margin-bottom:2rem}
+.success-details{background:var(--warm);border:1px solid var(--border);padding:1.25rem 2rem;margin-bottom:2rem;text-align:left;font-size:13px;line-height:2.2;min-width:320px}
+.success-details strong{color:var(--ink)}
+.btn-continue{background:var(--ink);color:var(--white);border:none;padding:14px 36px;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
 
-/* ORDER SUMMARY */
-.order-summary{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.5rem;position:sticky;top:80px}
-.summary-row{display:flex;justify-content:space-between;font-size:14px;color:var(--gray);margin-bottom:8px}
-.summary-total{display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--dark);padding-top:12px;border-top:1px solid var(--border);margin-top:4px}
-
-/* ADDRESS FORM */
-.address-section{margin-top:1rem}
-.address-title{font-size:13px;color:var(--gray);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
-.address-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.address-grid .full{grid-column:1/-1}
-.addr-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;color:var(--dark);background:var(--cream)}
-.addr-input:focus{outline:none;border-color:var(--brown)}
-
-/* SELLER STATS */
-.seller-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center}
-.stat-val{font-size:20px;font-weight:700;color:var(--brown)}
-.stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px}
-.tag{display:inline-block;background:var(--light);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--gray);margin-right:4px}
-
-/* ORDERS TAB */
-.orders-table{width:100%;border-collapse:collapse;font-size:13px}
-.orders-table th{text-align:left;padding:10px 12px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;font-size:11px;border-bottom:1px solid var(--border)}
-.orders-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
-.status-badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase}
-.status-paid{background:#d1fae5;color:#065f46}
-.status-pending{background:#fef3c7;color:#92400e}
-.status-failed{background:#fee2e2;color:#991b1b}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:var(--white);padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:8px;max-width:320px}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.success{background:var(--green)}
-.toast.warning{background:#e67e22}
-.toast.error{background:var(--red)}
-
-/* LOADING */
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.7s linear infinite}
+/* ── LOADING ── */
+.loader{display:none;position:fixed;inset:0;background:rgba(15,13,10,0.6);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--white);font-size:13px;letter-spacing:1px}
+.loader.show{display:flex}
+.spin{width:36px;height:36px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--white);border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(28,26,23,0.5);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:white;font-size:16px}
-.loading-overlay.show{display:flex}
-.big-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.7s linear infinite}
-.no-products{text-align:center;padding:2rem;color:var(--gray);font-size:14px;grid-column:1/-1}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--white);padding:12px 24px;font-size:13px;letter-spacing:0.5px;z-index:700;opacity:0;transition:all 0.3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{background:var(--green)}
+.toast.warn{background:var(--rust)}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:rgba(255,255,255,0.35);text-align:center;padding:2rem;font-size:12px;letter-spacing:1px;margin-top:4rem}
+footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">Utkal Furniture</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('shop')">Shop</button>
-    <button class="nav-tab" onclick="showPage('seller')">Seller Portal</button> 
-    <button class="nav-tab" onclick="showPage('orders')">Orders</button>
-  </div>
-  <div class="nav-right">
-    <button class="cart-btn" onclick="showPage('cart')">
-      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+<header>
+  <div class="logo">FUNITURE<em>.</em>CO</div>
+  <div class="header-right">
+    <button class="nav-link active" onclick="scrollToProducts()">Collection</button>
+    <button class="nav-link" onclick="openCart()">
+      Cart
+      <span id="cartCount" style="display:inline-flex;align-items:center;justify-content:center;background:#C9943A;color:#0F0D0A;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:500;margin-left:6px">0</span>
     </button>
   </div>
-</nav>
+</header>
 
-<!-- SHOP PAGE -->
-<div class="page active" id="shopPage">
-  <div class="hero">
-    <h1>Timeless <span>Furniture</span></h1>
-    <p>Crafted for the way you live. Discover pieces that last a lifetime.</p>
-  </div>
-  <div class="filter-bar">
-    <span class="filter-label">Filter:</span>
-    <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
-    <button class="filter-btn" onclick="filterProducts('sofa',this)">Sofas</button>
-    <button class="filter-btn" onclick="filterProducts('table',this)">Tables</button>
-    <button class="filter-btn" onclick="filterProducts('chair',this)">Chairs</button>
-    <button class="filter-btn" onclick="filterProducts('storage',this)">Storage</button>
-    <button class="filter-btn" onclick="filterProducts('bed',this)">Beds</button>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <p class="hero-sub">New Collection 2025</p>
+  <h1>Live with <em>intention</em></h1>
+  <p class="hero-desc">Each piece is chosen for beauty, craft, and the way it transforms a room into a home.</p>
+</section>
+
+<div class="filter-strip" id="filterStrip">
+  <button class="filter-tab active" onclick="filterBy('all',this)">All Pieces</button>
+  <button class="filter-tab" onclick="filterBy('sofa',this)">Sofas</button>
+  <button class="filter-tab" onclick="filterBy('table',this)">Tables</button>
+  <button class="filter-tab" onclick="filterBy('chair',this)">Chairs</button>
+  <button class="filter-tab" onclick="filterBy('storage',this)">Storage</button>
+  <button class="filter-tab" onclick="filterBy('bed',this)">Beds</button>
+</div>
+
+<section class="products-section" id="productsSection">
+  <div class="section-header">
+    <h2>The Collection</h2>
+    <span id="productCount">Loading…</span>
   </div>
   <div class="products-grid" id="productsGrid">
-    <div class="no-products">Loading products…</div>
+    <div class="no-products">Loading collection…</div>
   </div>
-</div>
+</section>
 
-<!-- SELLER PAGE -->
-<div class="page" id="sellerPage">
-  <div class="seller-layout">
-    <div class="seller-list">
-      <div class="seller-stats" id="sellerStats"></div>
-      <button class="add-new-btn" onclick="newProduct()">+ Add New Product</button>
-      <div class="section-title">Your Listings</div>
-      <div id="sellerItems"><div style="text-align:center;padding:2rem;color:var(--gray)">Loading…</div></div>
-    </div>
-    <div class="seller-form-area">
-      <div class="section-title" id="formTitle">Add New Product</div>
-      <div class="form-card" id="sellerForm">
-        <div class="form-row">
-          <label class="form-label">Product Photo</label>
-          <div class="upload-zone" id="uploadZone">
-            <img id="previewImg" class="upload-preview" style="display:none">
-            <input type="file" accept="image/*" id="imageFile" onchange="handleImageUpload(event)">
-            <div id="uploadPlaceholder">
-              <div class="upload-icon">📷</div>
-              <div class="upload-text"><strong>Click to upload</strong> or drag &amp; drop<br>PNG, JPG up to 5MB</div>
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">Product Name</label>
-          <input type="text" class="form-input" id="pName" placeholder="e.g. Nordic Oak Dining Table">
-        </div>
-        <div class="form-row-2">
-          <div>
-            <label class="form-label">Category</label>
-            <select class="form-input" id="pCat">
-              <option value="sofa">Sofa</option>
-              <option value="table">Table</option>
-              <option value="chair">Chair</option>
-              <option value="storage">Storage</option>
-              <option value="bed">Bed</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label class="form-label">Price (₹)</label>
-            <input type="number" class="form-input" id="pPrice" placeholder="0">
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div>
-            <label class="form-label">Original Price (₹)</label>
-            <input type="number" class="form-input" id="pOriginal" placeholder="Optional">
-          </div>
-          <div>
-            <label class="form-label">Stock Quantity</label>
-            <input type="number" class="form-input" id="pStock" placeholder="10" min="0">
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div>
-            <label class="form-label">Badge</label>
-            <input type="text" class="form-input" id="pBadge" placeholder="New, Sale, Hot…">
-          </div>
-          <div>
-            <label class="form-label">&nbsp;</label>
-            <div style="font-size:12px;color:var(--gray);padding-top:14px">Badge shown on product card</div>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">Description</label>
-          <textarea class="form-input" id="pDesc" rows="3" placeholder="Brief product description…"></textarea>
-        </div>
-        <button class="submit-btn" id="saveBtn" onclick="saveProduct()">Save Product</button>
-        <button class="delete-btn" id="deleteBtn" style="display:none" onclick="deleteProduct()">Delete Product</button>
+<footer>
+  &copy; 2026 Funiture.co &nbsp;·&nbsp; Crafted furniture for modern living &nbsp;·&nbsp;
+  <a href="http://localhost:3001" target="_blank">Seller Portal →</a>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Your Cart</h3>
+    <button class="close-drawer" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="summary-lines" id="summaryLines"></div>
+    <div class="addr-block">
+      <div class="addr-title">Delivery Address</div>
+      <div class="addr-grid">
+        <input class="ai full" id="addrName" placeholder="Full Name">
+        <input class="ai full" id="addrPhone" placeholder="Phone Number">
+        <input class="ai full" id="addrLine1" placeholder="Address Line 1">
+        <input class="ai" id="addrCity" placeholder="City">
+        <input class="ai" id="addrPin" placeholder="PIN Code">
+        <input class="ai full" id="addrState" placeholder="State">
       </div>
     </div>
+    <button class="pay-btn" id="payBtn" onclick="initiatePayment()">
+      <span>Pay with Razorpay</span>
+    </button>
+    <div class="secure-line">🔒 Secured by Razorpay · 256-bit SSL</div>
   </div>
 </div>
 
-<!-- CART PAGE -->
-<div class="page" id="cartPage">
-  <div class="cart-layout">
-    <div>
-      <div class="section-title">Shopping Cart</div>
-      <div id="cartItems"></div>
-    </div>
-    <div>
-      <div class="order-summary">
-        <h3 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:1rem">Order Summary</h3>
-        <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">₹0</span></div>
-        <div class="summary-row"><span>Delivery</span><span id="sumDelivery">₹0</span></div>
-        <div class="summary-row"><span>GST (18%)</span><span id="sumTax">₹0</span></div>
-        <div class="summary-total"><span>Total</span><span id="sumTotal">₹0</span></div>
-
-        <div class="address-section">
-          <div class="address-title">Delivery Address</div>
-          <div style="display:grid;gap:8px">
-            <input class="addr-input full" id="addrName" placeholder="Full Name" style="grid-column:1/-1">
-            <input class="addr-input" id="addrPhone" placeholder="Phone Number" style="grid-column:1/-1">
-            <input class="addr-input" id="addrLine1" placeholder="Address Line 1" style="grid-column:1/-1">
-            <input class="addr-input" id="addrCity" placeholder="City">
-            <input class="addr-input" id="addrPin" placeholder="PIN Code">
-            <input class="addr-input" id="addrState" placeholder="State" style="grid-column:1/-1">
-          </div>
-        </div>
-
-        <button class="submit-btn" style="margin-top:1rem" id="payNowBtn" onclick="initiatePayment()">Pay with Razorpay</button>
-        <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--gray);margin-top:8px">
-          🔒 Secured by Razorpay &bull; 256-bit SSL
-        </div>
-        <button style="width:100%;background:none;border:none;color:var(--gray);font-size:13px;margin-top:8px;padding:6px;cursor:pointer" onclick="showPage('shop')">← Continue Shopping</button>
-      </div>
-    </div>
-  </div>
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2>Order Confirmed</h2>
+  <p>Your furniture is on its way. Expect delivery in 5–7 business days.</p>
+  <div class="success-details" id="successDetails"></div>
+  <button class="btn-continue" onclick="dismissSuccess()">Continue Shopping</button>
 </div>
 
-<!-- ORDERS PAGE -->
-<div class="page" id="ordersPage">
-  <div style="padding:2rem;max-width:1100px;margin:0 auto">
-    <div class="section-title">Order History</div>
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-      <table class="orders-table" id="ordersTable">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Items</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Payment ID</th>
-          </tr>
-        </thead>
-        <tbody id="orderRows"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray)">Loading orders…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- LOADING OVERLAY -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="big-spinner"></div>
-  <span id="loadingMsg">Processing…</span>
-</div>
-
-<!-- TOAST -->
+<!-- LOADER -->
+<div class="loader" id="loader"><div class="spin"></div><span id="loaderMsg">Processing…</span></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const API = ''; // Empty = same origin. Change to 'http://localhost:3000' if frontend is separate
-const EMOJIS = {sofa:'🛋️',table:'🪑',chair:'💺',storage:'🗄️',bed:'🛏️',other:'🪴'};
-
-let allProducts = [];
-let cart = JSON.parse(localStorage.getItem('maison_cart') || '[]');
-let editingId = null;
-let currentImgFile = null;
-let currentFilter = 'all';
-let razorpayKeyId = '';
-
-// ─── UTILS ───────────────────────────────────────────────────────────────────
+const EMOJIS={sofa:'🛋️',table:'🪑',chair:'💺',storage:'🗄️',bed:'🛏️',other:'🪴'};
 const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+let products=[], cart=JSON.parse(localStorage.getItem('Funiture_cart')||'[]'), currentFilter='all';
 
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = (type==='success'?'✓ ':type==='warning'?'⚠ ':type==='error'?'✕ ':'') + msg;
-  t.className = 'toast ' + type;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type==='success'?'ok':type==='warning'?'warn':'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+function showLoader(msg='Processing…'){document.getElementById('loaderMsg').textContent=msg;document.getElementById('loader').classList.add('show')}
+function hideLoader(){document.getElementById('loader').classList.remove('show')}
+function saveCart(){localStorage.setItem('Funiture_cart',JSON.stringify(cart))}
+function updateCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0)}
+
+async function apiFetch(url,opts={}){
+  const r=await fetch(url,opts);
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.message||'Error');
+  return d;
 }
 
-function showLoading(msg='Processing…') {
-  document.getElementById('loadingMsg').textContent = msg;
-  document.getElementById('loadingOverlay').classList.add('show');
-}
-function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
-
-function saveCartToStorage() { localStorage.setItem('maison_cart', JSON.stringify(cart)); }
-function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((a,x) => a+x.qty, 0); }
-
-async function apiFetch(url, opts={}) {
-  const res = await fetch(API + url, opts);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'API error');
-  return data;
-}
-
-// ─── PAGE NAVIGATION ─────────────────────────────────────────────────────────
-function showPage(p) {
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
-  document.getElementById(p + 'Page').classList.add('active');
-  const tabMap = {shop:0, seller:1, orders:2};
-  if (tabMap[p] !== undefined) document.querySelectorAll('.nav-tab')[tabMap[p]]?.classList.add('active');
-  if (p === 'shop') loadProducts();
-  if (p === 'seller') { loadSellerProducts(); newProduct(); }
-  if (p === 'cart') renderCart();
-  if (p === 'orders') loadOrders();
-}
-
-// ─── SHOP ─────────────────────────────────────────────────────────────────────
-async function loadProducts() {
-  const grid = document.getElementById('productsGrid');
-  grid.innerHTML = '<div class="no-products">Loading products…</div>';
-  try {
-    const url = currentFilter === 'all' ? '/api/products' : `/api/products?cat=${currentFilter}`;
-    const data = await apiFetch(url);
-    allProducts = data.products;
-    renderProducts(allProducts);
-  } catch(e) {
-    grid.innerHTML = `<div class="no-products">Failed to load products: ${e.message}</div>`;
+async function loadProducts(){
+  const grid=document.getElementById('productsGrid');
+  try{
+    const url=currentFilter==='all'?'/api/products':`/api/products?cat=${currentFilter}`;
+    const {products:list}=await apiFetch(url);
+    products=list;
+    document.getElementById('productCount').textContent=list.length+' pieces';
+    if(!list.length){grid.innerHTML='<div class="no-products">No pieces in this category yet.</div>';return;}
+    grid.innerHTML=list.map(p=>`
+      <div class="card">
+        <div class="card-img">
+          ${p.img?`<img src="${p.img}" alt="${p.name}">`:`<div class="emoji">${EMOJIS[p.cat]||'🪑'}</div>`}
+          ${p.badge?`<div class="badge-tag">${p.badge}</div>`:''}
+        </div>
+        <div class="card-body">
+          <div class="card-cat">${p.cat}</div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-desc">${p.desc}</div>
+          <div class="card-footer">
+            <div class="price-block">
+              <span class="price-now">${fmt(p.price)}</span>
+              ${p.original?`<span class="price-was">${fmt(p.original)}</span>`:''}
+              ${p.stock<4&&p.stock>0?`<div class="stock-tag">Only ${p.stock} left</div>`:''}
+            </div>
+            ${p.stock>0
+              ?`<button class="btn-add" onclick="addToCart('${p.id}')">Add to Cart</button>`
+              :`<button class="btn-oos">Sold Out</button>`}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }catch(e){
+    grid.innerHTML=`<div class="no-products">Could not load products. Is the server running?</div>`;
   }
 }
 
-function filterProducts(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+function filterBy(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
   loadProducts();
 }
+function scrollToProducts(){document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})}
 
-function renderProducts(products) {
-  const grid = document.getElementById('productsGrid');
-  if (!products.length) { grid.innerHTML = '<div class="no-products">No products found.</div>'; return; }
-  grid.innerHTML = products.map(p => `
-    <div class="product-card">
-      <div class="product-img">
-        ${p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div class="product-img-placeholder">${EMOJIS[p.cat]||'🪑'}</div>`}
-        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
-      </div>
-      <div class="product-info">
-        <div class="product-cat">${p.cat}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-footer">
-          <div>
-            <div class="product-price">${fmt(p.price)}${p.original ? `<s>${fmt(p.original)}</s>` : ''}</div>
-            <div class="stock-info ${p.stock < 4 ? 'stock-low' : ''}">${p.stock < 4 ? `⚠ Only ${p.stock} left` : `${p.stock} in stock`}</div>
-          </div>
-          ${p.stock > 0
-            ? `<button class="add-cart-btn" onclick="addToCart('${p.id}')">Add to Cart</button>`
-            : `<button class="out-of-stock">Out of Stock</button>`}
+function addToCart(id){
+  const p=products.find(x=>x.id===id); if(!p) return;
+  const ex=cart.find(x=>x.id===id);
+  ex?ex.qty++:cart.push({id:p.id,name:p.name,cat:p.cat,price:p.price,img:p.img,qty:1});
+  saveCart(); updateCount();
+  toast('Added: '+p.name,'success');
+}
+
+function openCart(){
+  renderDrawer();
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+function renderDrawer(){
+  const body=document.getElementById('drawerBody');
+  const foot=document.getElementById('drawerFoot');
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty-state"><span class="empty-icon">🛋️</span><p>Your cart is empty.</p><button class="pay-btn" style="width:auto;padding:12px 28px" onclick="closeCart()">Browse Collection</button></div>`;
+    foot.style.display='none'; return;
+  }
+  body.innerHTML=cart.map(item=>`
+    <div class="ci">
+      <div class="ci-thumb">${item.img?`<img src="${item.img}">`:(EMOJIS[item.cat]||'🪑')}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">${fmt(item.price)} each</div>
+        <div class="ci-qty">
+          <button class="qb" onclick="changeQty('${item.id}',-1)">−</button>
+          <span class="qv">${item.qty}</span>
+          <button class="qb" onclick="changeQty('${item.id}',1)">+</button>
+          <button class="ci-del" onclick="removeItem('${item.id}')">✕</button>
         </div>
       </div>
+      <div class="ci-total">${fmt(item.price*item.qty)}</div>
     </div>
   `).join('');
+  const sub=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const del=sub>50000?0:599; const tax=Math.round(sub*0.18);
+  document.getElementById('summaryLines').innerHTML=`
+    <div class="sl"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+    <div class="sl"><span>Delivery</span><span>${del===0?'FREE':fmt(del)}</span></div>
+    <div class="sl"><span>GST (18%)</span><span>${fmt(tax)}</span></div>
+    <div class="sl total"><span>Total</span><span>${fmt(sub+del+tax)}</span></div>
+  `;
+  foot.style.display='block';
 }
 
-function addToCart(id) {
-  const p = allProducts.find(x => x.id === id);
-  if (!p) return;
-  const ex = cart.find(x => x.id === id);
-  if (ex) { ex.qty++; } else { cart.push({id:p.id,name:p.name,cat:p.cat,price:p.price,img:p.img,qty:1}); }
-  saveCartToStorage();
-  updateCartCount();
-  showToast('Added: ' + p.name, 'success');
+function changeQty(id,d){
+  const item=cart.find(x=>x.id===id); if(!item) return;
+  item.qty+=d;
+  if(item.qty<1) cart=cart.filter(x=>x.id!==id);
+  saveCart(); updateCount(); renderDrawer();
 }
+function removeItem(id){cart=cart.filter(x=>x.id!==id);saveCart();updateCount();renderDrawer();}
 
-// ─── CART ─────────────────────────────────────────────────────────────────────
-function renderCart() {
-  const area = document.getElementById('cartItems');
-  if (!cart.length) {
-    area.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛋️</div><p>Your cart is empty</p><button class="submit-btn" style="width:auto;padding:10px 24px" onclick="showPage('shop')">Browse Furniture</button></div>`;
-    setOrderSummary(0,0,0,0); return;
-  }
-  area.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-img">
-        ${item.img ? `<img src="${item.img}">` : (EMOJIS[item.cat]||'🪑')}
-      </div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-cat">${item.cat} &bull; ${fmt(item.price)} each</div>
-        <div class="qty-ctrl">
-          <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
-          <span class="qty-val">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
-        </div>
-      </div>
-      <div class="cart-item-price">${fmt(item.price * item.qty)}</div>
-      <button class="cart-remove" onclick="removeFromCart('${item.id}')">✕</button>
-    </div>
-  `).join('');
-  const sub = cart.reduce((a,x) => a + x.price*x.qty, 0);
-  const del = sub > 50000 ? 0 : 599;
-  const tax = Math.round(sub * 0.18);
-  setOrderSummary(sub, del, tax, sub+del+tax);
-}
-
-function setOrderSummary(sub, del, tax, total) {
-  document.getElementById('sumSubtotal').textContent = fmt(sub);
-  document.getElementById('sumDelivery').textContent = del === 0 ? 'FREE' : fmt(del);
-  document.getElementById('sumTax').textContent = fmt(tax);
-  document.getElementById('sumTotal').textContent = fmt(total);
-}
-
-function changeQty(id, d) {
-  const item = cart.find(x => x.id === id);
-  if (!item) return;
-  item.qty += d;
-  if (item.qty < 1) cart = cart.filter(x => x.id !== id);
-  saveCartToStorage(); updateCartCount(); renderCart();
-}
-function removeFromCart(id) { cart = cart.filter(x => x.id !== id); saveCartToStorage(); updateCartCount(); renderCart(); }
-
-// ─── RAZORPAY PAYMENT ─────────────────────────────────────────────────────────
-async function initiatePayment() {
-  if (!cart.length) { showToast('Cart is empty','warning'); return; }
-
-  // Validate address
-  const name = document.getElementById('addrName').value.trim();
-  const phone = document.getElementById('addrPhone').value.trim();
-  const line1 = document.getElementById('addrLine1').value.trim();
-  const city = document.getElementById('addrCity').value.trim();
-  const pin = document.getElementById('addrPin').value.trim();
-  const state = document.getElementById('addrState').value.trim();
-  if (!name || !phone || !line1 || !city || !pin || !state) {
-    showToast('Please fill in your complete delivery address','warning'); return;
-  }
-
-  showLoading('Creating order…');
-  try {
-    // Step 1: Create Razorpay order on backend
-    const orderData = await apiFetch('/api/payment/create-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        cartItems: cart.map(x => ({ id: x.id, qty: x.qty })),
-        address: { name, phone, line1, city, pin, state }
-      })
+async function initiatePayment(){
+  if(!cart.length){toast('Cart is empty','warning');return;}
+  const name=document.getElementById('addrName').value.trim();
+  const phone=document.getElementById('addrPhone').value.trim();
+  const line1=document.getElementById('addrLine1').value.trim();
+  const city=document.getElementById('addrCity').value.trim();
+  const pin=document.getElementById('addrPin').value.trim();
+  const state=document.getElementById('addrState').value.trim();
+  if(!name||!phone||!line1||!city||!pin||!state){toast('Please fill in your delivery address','warning');return;}
+  showLoader('Creating order…');
+  try{
+    const data=await apiFetch('/api/payment/create-order',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({cartItems:cart.map(x=>({id:x.id,qty:x.qty})),address:{name,phone,line1,city,pin,state}})
     });
-
-    razorpayKeyId = orderData.keyId;
-    hideLoading();
-
-    // Step 2: Open Razorpay Checkout
-    const options = {
-      key: orderData.keyId,
-      amount: orderData.amount,          // in paise
-      currency: orderData.currency,
-      name: 'Maison.co',
-      description: 'Furniture Order',
-      image: '',                          // add your logo URL here
-      order_id: orderData.orderId,        // Razorpay order ID from backend
-      handler: async function(response) {
-        // Step 3: Verify payment on backend
-        showLoading('Verifying payment…');
-        try {
-          await apiFetch('/api/payment/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            })
+    hideLoader();
+    const rzp=new window.Razorpay({
+      key:data.keyId, amount:data.amount, currency:data.currency,
+      name:'Funiture.co', description:'Furniture Order', order_id:data.orderId,
+      handler:async function(response){
+        showLoader('Verifying payment…');
+        try{
+          await apiFetch('/api/payment/verify',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({razorpay_order_id:response.razorpay_order_id,razorpay_payment_id:response.razorpay_payment_id,razorpay_signature:response.razorpay_signature})
           });
-          hideLoading();
-          cart = []; saveCartToStorage(); updateCartCount();
-          showOrderSuccess(response.razorpay_payment_id, response.razorpay_order_id);
-        } catch(e) {
-          hideLoading();
-          showToast('Payment verification failed: ' + e.message, 'error');
-        }
+          hideLoader();
+          cart=[];saveCart();updateCount();closeCart();
+          document.getElementById('successDetails').innerHTML=`
+            <strong>Order ID:</strong> ${response.razorpay_order_id.replace('order_','').substring(0,10).toUpperCase()}<br>
+            <strong>Payment ID:</strong> ${response.razorpay_payment_id}<br>
+            <strong>Delivery to:</strong> ${name}, ${city}, ${state}<br>
+            <strong>Estimated:</strong> 5–7 business days
+          `;
+          document.getElementById('successScreen').classList.add('show');
+        }catch(e){hideLoader();toast('Verification failed: '+e.message,'warning');}
       },
-      prefill: { name, contact: phone },
-      notes: { address: `${line1}, ${city}, ${state} - ${pin}` },
-      theme: { color: '#C9943A' },
-      modal: {
-        ondismiss: async function() {
-          // Notify backend of dismissed/failed payment
-          await fetch(API + '/api/payment/failed', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ razorpay_order_id: orderData.orderId, error: { reason: 'dismissed' } })
-          });
-          showToast('Payment cancelled', 'warning');
-        }
-      }
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.on('payment.failed', async function(response) {
-      await fetch(API + '/api/payment/failed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ razorpay_order_id: orderData.orderId, error: response.error })
-      });
-      showToast('Payment failed: ' + response.error.description, 'error');
+      prefill:{name,contact:phone},
+      theme:{color:'#A0522D'},
+      modal:{ondismiss:async()=>{
+        await fetch('/api/payment/failed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({razorpay_order_id:data.orderId})});
+        toast('Payment cancelled','warning');
+      }}
+    });
+    rzp.on('payment.failed',async function(r){
+      await fetch('/api/payment/failed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({razorpay_order_id:data.orderId,error:r.error})});
+      toast('Payment failed: '+r.error.description,'warning');
     });
     rzp.open();
-
-  } catch(e) {
-    hideLoading();
-    showToast('Could not create order: ' + e.message, 'error');
-  }
+  }catch(e){hideLoader();toast('Order error: '+e.message,'warning');}
 }
 
-function showOrderSuccess(paymentId, orderId) {
-  const shortOrder = orderId.replace('order_', '').substring(0,8).toUpperCase();
-  document.getElementById('cartPage').innerHTML = `
-    <div style="max-width:480px;margin:4rem auto;text-align:center;padding:2rem">
-      <div style="font-size:72px;margin-bottom:1rem">✅</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--green);margin-bottom:8px">Order Placed!</h2>
-      <p style="color:var(--gray);font-size:15px;margin-bottom:1.5rem">Your furniture is on its way. A confirmation will be sent to you shortly.</p>
-      <div style="background:var(--light);border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:left;font-size:13px;line-height:2">
-        <strong>Order ID:</strong> ${shortOrder}<br>
-        <strong>Payment ID:</strong> ${paymentId}<br>
-        <strong>Estimated Delivery:</strong> 5–7 business days<br>
-        <strong>Status:</strong> <span style="color:var(--green);font-weight:600">Paid ✓</span>
-      </div>
-      <button class="submit-btn" style="width:auto;padding:10px 28px" onclick="showPage('shop')">Continue Shopping</button>
-      <button onclick="showPage('orders')" style="display:block;margin:10px auto 0;background:none;border:none;color:var(--gray);font-size:13px;cursor:pointer">View all orders →</button>
-    </div>
-  `;
+function dismissSuccess(){
+  document.getElementById('successScreen').classList.remove('show');
+  loadProducts();
 }
 
-// ─── ORDERS ───────────────────────────────────────────────────────────────────
-async function loadOrders() {
-  const tbody = document.getElementById('orderRows');
-  try {
-    const data = await apiFetch('/api/orders');
-    if (!data.orders.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray)">No orders yet</td></tr>'; return; }
-    tbody.innerHTML = data.orders.map(o => `
-      <tr>
-        <td style="font-family:monospace;font-size:12px">${o.razorpayOrderId ? o.razorpayOrderId.substring(6,14).toUpperCase() : o.internalId.substring(5,13).toUpperCase()}</td>
-        <td>${new Date(o.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
-        <td>${o.items.map(i => `${i.name} ×${i.qty}`).join(', ')}</td>
-        <td><strong>${fmt(o.total)}</strong></td>
-        <td><span class="status-badge status-${o.status}">${o.status}</span></td>
-        <td style="font-family:monospace;font-size:11px;color:var(--gray)">${o.paymentId || '—'}</td>
-      </tr>
-    `).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--red)">Failed to load orders: ${e.message}</td></tr>`;
-  }
-}
-
-// ─── SELLER ───────────────────────────────────────────────────────────────────
-async function loadSellerProducts() {
-  const list = document.getElementById('sellerItems');
-  try {
-    const data = await apiFetch('/api/products');
-    allProducts = data.products;
-    const total = allProducts.reduce((a,x) => a+x.price, 0);
-    document.getElementById('sellerStats').innerHTML = `
-      <div class="stat-card"><div class="stat-val">${allProducts.length}</div><div class="stat-label">Products</div></div>
-      <div class="stat-card"><div class="stat-val">${fmt(Math.round(total/allProducts.length||0))}</div><div class="stat-label">Avg Price</div></div>
-      <div class="stat-card"><div class="stat-val">${allProducts.reduce((a,x)=>a+x.stock,0)}</div><div class="stat-label">Total Stock</div></div>
-    `;
-    if (!allProducts.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray)">No products yet.</div>'; return; }
-    list.innerHTML = allProducts.map(p => `
-      <div class="seller-item ${editingId===p.id?'selected':''}" onclick="editProduct('${p.id}')">
-        <div class="seller-item-thumb">
-          ${p.img ? `<img src="${p.img}">` : (EMOJIS[p.cat]||'🪑')}
-        </div>
-        <div class="seller-item-info">
-          <div class="seller-item-name">${p.name}</div>
-          <div class="seller-item-price">${fmt(p.price)} <span class="tag">${p.cat}</span><span class="tag">Stock: ${p.stock}</span></div>
-        </div>
-        <div class="seller-item-actions">
-          <button class="icon-btn edit" onclick="event.stopPropagation();editProduct('${p.id}')" title="Edit">✏️</button>
-          <button class="icon-btn" onclick="event.stopPropagation();deleteProductById('${p.id}')" title="Delete">🗑️</button>
-        </div>
-      </div>
-    `).join('');
-  } catch(e) {
-    list.innerHTML = `<div style="padding:1rem;color:var(--red)">Error: ${e.message}</div>`;
-  }
-}
-
-function newProduct() {
-  editingId = null; currentImgFile = null;
-  document.getElementById('formTitle').textContent = 'Add New Product';
-  document.getElementById('pName').value = '';
-  document.getElementById('pCat').value = 'sofa';
-  document.getElementById('pPrice').value = '';
-  document.getElementById('pOriginal').value = '';
-  document.getElementById('pBadge').value = '';
-  document.getElementById('pStock').value = '';
-  document.getElementById('pDesc').value = '';
-  document.getElementById('previewImg').style.display = 'none';
-  document.getElementById('uploadPlaceholder').style.display = 'block';
-  document.getElementById('imageFile').value = '';
-  document.getElementById('deleteBtn').style.display = 'none';
-  loadSellerProducts();
-}
-
-function editProduct(id) {
-  const p = allProducts.find(x => x.id === id);
-  if (!p) return;
-  editingId = id; currentImgFile = null;
-  document.getElementById('formTitle').textContent = 'Edit Product';
-  document.getElementById('pName').value = p.name;
-  document.getElementById('pCat').value = p.cat;
-  document.getElementById('pPrice').value = p.price;
-  document.getElementById('pOriginal').value = p.original || '';
-  document.getElementById('pBadge').value = p.badge || '';
-  document.getElementById('pStock').value = p.stock || '';
-  document.getElementById('pDesc').value = p.desc;
-  if (p.img) {
-    document.getElementById('previewImg').src = p.img;
-    document.getElementById('previewImg').style.display = 'block';
-    document.getElementById('uploadPlaceholder').style.display = 'none';
-  } else {
-    document.getElementById('previewImg').style.display = 'none';
-    document.getElementById('uploadPlaceholder').style.display = 'block';
-  }
-  document.getElementById('deleteBtn').style.display = 'block';
-  loadSellerProducts();
-}
-
-function handleImageUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  currentImgFile = file;
-  const url = URL.createObjectURL(file);
-  document.getElementById('previewImg').src = url;
-  document.getElementById('previewImg').style.display = 'block';
-  document.getElementById('uploadPlaceholder').style.display = 'none';
-}
-
-async function saveProduct() {
-  const name = document.getElementById('pName').value.trim();
-  const price = document.getElementById('pPrice').value;
-  if (!name) { showToast('Please enter a product name','warning'); return; }
-  if (!price || parseFloat(price) <= 0) { showToast('Please enter a valid price','warning'); return; }
-
-  const btn = document.getElementById('saveBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Saving…';
-
-  const fd = new FormData();
-  fd.append('name', name);
-  fd.append('cat', document.getElementById('pCat').value);
-  fd.append('price', price);
-  fd.append('original', document.getElementById('pOriginal').value);
-  fd.append('badge', document.getElementById('pBadge').value);
-  fd.append('stock', document.getElementById('pStock').value || '10');
-  fd.append('desc', document.getElementById('pDesc').value);
-  if (currentImgFile) fd.append('image', currentImgFile);
-
-  try {
-    if (editingId) {
-      await apiFetch(`/api/products/${editingId}`, { method: 'PUT', body: fd });
-      showToast('Product updated!', 'success');
-    } else {
-      await apiFetch('/api/products', { method: 'POST', body: fd });
-      showToast('Product added!', 'success');
-    }
-    newProduct();
-  } catch(e) {
-    showToast('Error: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Save Product';
-  }
-}
-
-function deleteProduct() { if (editingId) deleteProductById(editingId); }
-async function deleteProductById(id) {
-  if (!confirm('Delete this product?')) return;
-  try {
-    await apiFetch(`/api/products/${id}`, { method: 'DELETE' });
-    cart = cart.filter(x => x.id !== id);
-    saveCartToStorage(); updateCartCount();
-    if (editingId === id) newProduct();
-    else loadSellerProducts();
-    showToast('Product deleted', 'warning');
-  } catch(e) {
-    showToast('Error: ' + e.message, 'error');
-  }
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-updateCartCount();
+updateCount();
 loadProducts();
 </script>
 </body>
