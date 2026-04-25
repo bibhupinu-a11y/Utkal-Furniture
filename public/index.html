@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Utkal Furniture</title>
+<title>Funiture</title>
 <!-- Razorpay Checkout SDK -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -170,7 +170,7 @@ nav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justif
 <body>
 
 <nav>
-  <div class="nav-logo">Utkal Furniture</div>
+  <div class="nav-logo">Funiture</div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('shop')">Shop</button>
     <button class="nav-tab" onclick="showPage('seller')">Seller Portal</button> 
@@ -351,7 +351,7 @@ const API = ''; // Empty = same origin. Change to 'http://localhost:3000' if fro
 const EMOJIS = {sofa:'🛋️',table:'🪑',chair:'💺',storage:'🗄️',bed:'🛏️',other:'🪴'};
 
 let allProducts = [];
-let cart = JSON.parse(localStorage.getItem('maison_cart') || '[]');
+let cart = JSON.parse(localStorage.getItem('Funiture_cart') || '[]');
 let editingId = null;
 let currentImgFile = null;
 let currentFilter = 'all';
@@ -374,7 +374,7 @@ function showLoading(msg='Processing…') {
 }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 
-function saveCartToStorage() { localStorage.setItem('maison_cart', JSON.stringify(cart)); }
+function saveCartToStorage() { localStorage.setItem('Funiture_cart', JSON.stringify(cart)); }
 function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((a,x) => a+x.qty, 0); }
 
 async function apiFetch(url, opts={}) {
@@ -537,7 +537,7 @@ async function initiatePayment() {
       key: orderData.keyId,
       amount: orderData.amount,          // in paise
       currency: orderData.currency,
-      name: 'Maison.co',
+      name: 'Funiture.co',
       description: 'Furniture Order',
       image: '',                          // add your logo URL here
       order_id: orderData.orderId,        // Razorpay order ID from backend
