@@ -1,4 +1,4 @@
-# 🛋️ Utkal Furniture
+# 🛋️ Funiture
 
 Full-stack furniture store with Node.js backend and **Razorpay** payment gateway.
 
