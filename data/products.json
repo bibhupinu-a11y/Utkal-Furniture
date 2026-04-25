@@ -3,25 +3,27 @@
     "id": "p1",
     "name": "Velvet Cloud Sofa",
     "cat": "sofa",
-    "price": 45999,
+    "price": 4599,
     "original": 59999,
     "desc": "3-seater premium velvet sofa with solid oak legs. Cloud-like comfort.",
     "badge": "Bestseller",
     "img": null,
     "stock": 10,
-    "createdAt": "2026-04-23T09:00:08.454Z"
+    "createdAt": "2026-04-23T09:00:08.454Z",
+    "updatedAt": "2026-04-25T21:44:09.247Z"
   },
   {
     "id": "p2",
     "name": "Nordic Oak Dining Table",
     "cat": "table",
-    "price": 28500,
+    "price": 2850,
     "original": null,
     "desc": "Solid oak dining table seats 6. Clean Scandinavian lines.",
     "badge": "New",
     "img": null,
     "stock": 5,
-    "createdAt": "2026-04-23T09:00:08.454Z"
+    "createdAt": "2026-04-23T09:00:08.454Z",
+    "updatedAt": "2026-04-25T21:45:27.863Z"
   },
   {
     "id": "p3",
@@ -70,5 +72,17 @@
     "img": null,
     "stock": 8,
     "createdAt": "2026-04-23T09:00:08.454Z"
+  },
+  {
+    "id": "p257df556",
+    "name": "Table Papu",
+    "cat": "table",
+    "price": 1100,
+    "original": 100,
+    "desc": "",
+    "badge": null,
+    "stock": 10,
+    "img": "/uploads/product-10e40fa6-b1a9-4fdb-adad-ab7f9d046815.jfif",
+    "createdAt": "2026-04-25T21:46:28.766Z"
   }
 ]
