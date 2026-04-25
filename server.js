@@ -20,9 +20,37 @@ const buyerApp = express();
 const sellerApp = express();
 const apiApp = express(); // shared API
 
-const BUYER_PORT = process.env.BUYER_PORT || 3000;
-const SELLER_PORT = process.env.SELLER_PORT || 3001;
+// const BUYER_PORT = process.env.BUYER_PORT || 3000;
+// const SELLER_PORT = process.env.SELLER_PORT || 3001;
 const API_PORT = process.env.API_PORT || 3002;
+
+// Render split mode
+const BUYER_ONLY = process.env.BUYER_ONLY === 'true';
+const SELLER_ONLY = process.env.SELLER_ONLY === 'true';
+
+if (BUYER_ONLY) {
+  mountApiRoutes(buyerApp);
+  buyerApp.use(express.static(path.join(__dirname, 'public', 'buyer')));
+  buyerApp.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, 'public', 'buyer', 'index.html'))
+  );
+  buyerApp.listen(process.env.PORT || 3000, () =>
+    console.log('Buyer Store running on port', process.env.PORT || 3000)
+  );
+  return; // stop here, don't start seller
+}
+
+if (SELLER_ONLY) {
+  mountApiRoutes(sellerApp);
+  sellerApp.use(express.static(path.join(__dirname, 'public', 'seller')));
+  sellerApp.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, 'public', 'seller', 'index.html'))
+  );
+  sellerApp.listen(process.env.PORT || 3001, () =>
+    console.log('Seller Portal running on port', process.env.PORT || 3001)
+  );
+  return;
+}
 
 // ─── Razorpay ────────────────────────────────────────────────────────────────
 const razorpay = new Razorpay({
