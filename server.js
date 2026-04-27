@@ -1,53 +1,52 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const crypto = require("crypto");
-const multer = require("multer");
+const express   = require("express");
+const cors      = require("cors");
+const path      = require("path");
+const crypto    = require("crypto");
+const multer    = require("multer");
 const { v4: uuidv4 } = require("uuid");
-const Razorpay = require("razorpay");
-const fs = require("fs");
+const Razorpay  = require("razorpay");
+const fs        = require("fs");
+const mongoose  = require("mongoose");
 
-const BUYER_PORT  = process.env.PORT || 3000;
-const SELLER_PORT = process.env.PORT || 3000;
-
-// ─── Razorpay ────────────────────────────────────────────────────────────────
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
+  key_id:     process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// ─── Ensure directories ──────────────────────────────────────────────────────
-["uploads", "data", "public/buyer", "public/seller"].forEach((dir) => {
-  const p = path.join(__dirname, dir);
-  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
-});
+const productSchema = new mongoose.Schema({
+  _id:      { type: String, default: () => "p" + uuidv4().replace(/-/g,"").substring(0,8) },
+  name:     { type: String, required: true },
+  cat:      { type: String, required: true },
+  price:    { type: Number, required: true },
+  original: { type: Number, default: null },
+  desc:     { type: String, default: "" },
+  badge:    { type: String, default: null },
+  stock:    { type: Number, default: 10 },
+  img:      { type: String, default: null },
+}, { timestamps: true });
 
-// ─── File DB ─────────────────────────────────────────────────────────────────
-const DB_PATH     = path.join(__dirname, "data", "products.json");
-const ORDERS_PATH = path.join(__dirname, "data", "orders.json");
+const orderSchema = new mongoose.Schema({
+  internalId:      String,
+  razorpayOrderId: String,
+  items:           Array,
+  subtotal:        Number,
+  delivery:        Number,
+  tax:             Number,
+  total:           Number,
+  address:         Object,
+  status:          { type: String, default: "pending" },
+  paymentId:       String,
+  paidAt:          Date,
+  failedAt:        Date,
+}, { timestamps: true });
 
-function readDB(filePath, def = []) {
-  try { return JSON.parse(fs.readFileSync(filePath, "utf8")); }
-  catch { return def; }
-}
-function writeDB(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
+const Product = mongoose.model("Product", productSchema);
+const Order   = mongoose.model("Order",   orderSchema);
 
-// Seed products
-if (!fs.existsSync(DB_PATH)) {
-  writeDB(DB_PATH, [
-    { id:"p1", name:"Velvet Cloud Sofa",       cat:"sofa",    price:45999, original:59999, desc:"3-seater premium velvet sofa with solid oak legs.",       badge:"Bestseller", img:null, stock:10, createdAt:new Date().toISOString() },
-    { id:"p2", name:"Nordic Oak Dining Table", cat:"table",   price:28500, original:null,  desc:"Solid oak dining table seats 6. Scandinavian lines.",      badge:"New",        img:null, stock:5,  createdAt:new Date().toISOString() },
-    { id:"p3", name:"Rattan Lounge Chair",     cat:"chair",   price:12800, original:16000, desc:"Handwoven natural rattan with cushioned seat.",            badge:"Sale",       img:null, stock:12, createdAt:new Date().toISOString() },
-    { id:"p4", name:"Walnut Storage Cabinet",  cat:"storage", price:34200, original:null,  desc:"4-door walnut veneer cabinet with soft-close hinges.",     badge:null,         img:null, stock:7,  createdAt:new Date().toISOString() },
-    { id:"p5", name:"Linen Platform Bed",      cat:"bed",     price:52000, original:68000, desc:"King size platform bed in natural linen.",                 badge:"Hot",        img:null, stock:4,  createdAt:new Date().toISOString() },
-    { id:"p6", name:"Marble Top Coffee Table", cat:"table",   price:18600, original:null,  desc:"White Carrara marble top with brushed brass frame.",       badge:null,         img:null, stock:8,  createdAt:new Date().toISOString() },
-  ]);
-}
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
-// ─── Multer — MUST be defined before mountApiRoutes ──────────────────────────
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename:    (req, file, cb) => cb(null, `product-${uuidv4()}${path.extname(file.originalname)}`),
@@ -55,179 +54,172 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    file.mimetype.startsWith("image/") ? cb(null, true) : cb(new Error("Images only"));
-  },
+  fileFilter: (req, file, cb) =>
+    file.mimetype.startsWith("image/") ? cb(null, true) : cb(new Error("Images only")),
 });
 
-// ─── Shared API ───────────────────────────────────────────────────────────────
+async function seedProducts() {
+  const count = await Product.countDocuments();
+  if (count > 0) return;
+  await Product.insertMany([
+    { _id:"p1", name:"Velvet Cloud Sofa",       cat:"sofa",    price:45999, original:59999, desc:"3-seater premium velvet sofa with solid oak legs.",    badge:"Bestseller", stock:10 },
+    { _id:"p2", name:"Nordic Oak Dining Table", cat:"table",   price:28500, original:null,  desc:"Solid oak dining table seats 6. Scandinavian lines.", badge:"New",        stock:5  },
+    { _id:"p3", name:"Rattan Lounge Chair",     cat:"chair",   price:12800, original:16000, desc:"Handwoven natural rattan with cushioned seat.",       badge:"Sale",       stock:12 },
+    { _id:"p4", name:"Walnut Storage Cabinet",  cat:"storage", price:34200, original:null,  desc:"4-door walnut veneer cabinet with soft-close hinges.",badge:null,         stock:7  },
+    { _id:"p5", name:"Linen Platform Bed",      cat:"bed",     price:52000, original:68000, desc:"King size platform bed in natural linen.",            badge:"Hot",        stock:4  },
+    { _id:"p6", name:"Marble Top Coffee Table", cat:"table",   price:18600, original:null,  desc:"White Carrara marble top with brushed brass frame.",  badge:null,         stock:8  },
+  ]);
+  console.log("Seeded default products");
+}
+
 function mountApiRoutes(app) {
-
-  app.get("/api/products", (req, res) => {
-    let products = readDB(DB_PATH);
-    const { cat } = req.query;
-    if (cat && cat !== "all") products = products.filter(p => p.cat === cat);
-    res.json({ success: true, products });
+  app.get("/api/products", async (req, res) => {
+    try {
+      const filter = {};
+      if (req.query.cat && req.query.cat !== "all") filter.cat = req.query.cat;
+      const products = await Product.find(filter).sort({ createdAt: -1 });
+      res.json({ success: true, products });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.get("/api/products/:id", (req, res) => {
-    const product = readDB(DB_PATH).find(p => p.id === req.params.id);
-    if (!product) return res.status(404).json({ success: false, message: "Not found" });
-    res.json({ success: true, product });
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      if (!product) return res.status(404).json({ success:false, message:"Not found" });
+      res.json({ success:true, product });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.post("/api/products", upload.single("image"), (req, res) => {
-    const { name, cat, price, original, badge, desc, stock } = req.body;
-    if (!name || !cat || !price)
-      return res.status(400).json({ success: false, message: "name, cat and price required" });
-    const products = readDB(DB_PATH);
-    const p = {
-      id:       "p" + uuidv4().replace(/-/g,"").substring(0,8),
-      name, cat,
-      price:    parseFloat(price),
-      original: original ? parseFloat(original) : null,
-      desc:     desc || "",
-      badge:    badge || null,
-      stock:    parseInt(stock) || 10,
-      img:      req.file ? `/uploads/${req.file.filename}` : null,
-      createdAt: new Date().toISOString(),
-    };
-    products.push(p);
-    writeDB(DB_PATH, products);
-    res.status(201).json({ success: true, product: p });
+  app.post("/api/products", upload.single("image"), async (req, res) => {
+    try {
+      const { name, cat, price, original, badge, desc, stock } = req.body;
+      if (!name || !cat || !price)
+        return res.status(400).json({ success:false, message:"name, cat and price required" });
+      const product = await Product.create({
+        name, cat,
+        price:    parseFloat(price),
+        original: original ? parseFloat(original) : null,
+        desc:     desc || "",
+        badge:    badge || null,
+        stock:    parseInt(stock) || 10,
+        img:      req.file ? `/uploads/${req.file.filename}` : null,
+      });
+      res.status(201).json({ success:true, product });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.put("/api/products/:id", upload.single("image"), (req, res) => {
-    const products = readDB(DB_PATH);
-    const idx = products.findIndex(p => p.id === req.params.id);
-    if (idx === -1) return res.status(404).json({ success: false, message: "Not found" });
-    const { name, cat, price, original, badge, desc, stock } = req.body;
-    products[idx] = {
-      ...products[idx],
-      ...(name  && { name }),
-      ...(cat   && { cat }),
-      ...(price && { price: parseFloat(price) }),
-      ...(original  !== undefined && { original: original ? parseFloat(original) : null }),
-      ...(badge     !== undefined && { badge: badge || null }),
-      ...(desc  && { desc }),
-      ...(stock && { stock: parseInt(stock) }),
-      ...(req.file  && { img: `/uploads/${req.file.filename}` }),
-      updatedAt: new Date().toISOString(),
-    };
-    writeDB(DB_PATH, products);
-    res.json({ success: true, product: products[idx] });
+  app.put("/api/products/:id", upload.single("image"), async (req, res) => {
+    try {
+      const { name, cat, price, original, badge, desc, stock } = req.body;
+      const update = {
+        ...(name  && { name }),
+        ...(cat   && { cat }),
+        ...(price && { price: parseFloat(price) }),
+        ...(original !== undefined && { original: original ? parseFloat(original) : null }),
+        ...(badge    !== undefined && { badge: badge || null }),
+        ...(desc  && { desc }),
+        ...(stock && { stock: parseInt(stock) }),
+        ...(req.file && { img: `/uploads/${req.file.filename}` }),
+      };
+      const product = await Product.findByIdAndUpdate(req.params.id, update, { new:true });
+      if (!product) return res.status(404).json({ success:false, message:"Not found" });
+      res.json({ success:true, product });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.delete("/api/products/:id", (req, res) => {
-    let products = readDB(DB_PATH);
-    const idx = products.findIndex(p => p.id === req.params.id);
-    if (idx === -1) return res.status(404).json({ success: false, message: "Not found" });
-    products.splice(idx, 1);
-    writeDB(DB_PATH, products);
-    res.json({ success: true });
+  app.delete("/api/products/:id", async (req, res) => {
+    try {
+      const product = await Product.findByIdAndDelete(req.params.id);
+      if (!product) return res.status(404).json({ success:false, message:"Not found" });
+      res.json({ success:true });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
   app.post("/api/payment/create-order", async (req, res) => {
     try {
       const { cartItems, address } = req.body;
-      if (!cartItems?.length) return res.status(400).json({ success: false, message: "Cart empty" });
-      const products = readDB(DB_PATH);
+      if (!cartItems?.length) return res.status(400).json({ success:false, message:"Cart empty" });
       let subtotal = 0;
       const orderItems = [];
       for (const item of cartItems) {
-        const product = products.find(p => p.id === item.id);
-        if (!product) return res.status(400).json({ success: false, message: `Product ${item.id} not found` });
+        const product = await Product.findById(item.id);
+        if (!product) return res.status(400).json({ success:false, message:`Product ${item.id} not found` });
         subtotal += product.price * item.qty;
-        orderItems.push({ id: product.id, name: product.name, price: product.price, qty: item.qty });
+        orderItems.push({ id:product._id, name:product.name, price:product.price, qty:item.qty });
       }
-      const delivery = subtotal > 50000 ? 0 : 599;
-      const tax      = Math.round(subtotal * 0.18);
-      const total    = subtotal + delivery + tax;
+      const delivery  = subtotal > 50000 ? 0 : 599;
+      const tax       = Math.round(subtotal * 0.18);
+      const total     = subtotal + delivery + tax;
       const receiptId = "rcpt_" + uuidv4().replace(/-/g,"").substring(0,12);
-      const rzOrder = await razorpay.orders.create({
-        amount: total * 100,
-        currency: process.env.CURRENCY || "INR",
-        receipt: receiptId,
-      });
-      const orders = readDB(ORDERS_PATH);
-      orders.push({ internalId: receiptId, razorpayOrderId: rzOrder.id, items: orderItems, subtotal, delivery, tax, total, address: address||{}, status:"pending", createdAt: new Date().toISOString() });
-      writeDB(ORDERS_PATH, orders);
+      const rzOrder   = await razorpay.orders.create({ amount: total * 100, currency: process.env.CURRENCY || "INR", receipt: receiptId });
+      await Order.create({ internalId: receiptId, razorpayOrderId: rzOrder.id, items: orderItems, subtotal, delivery, tax, total, address: address || {}, status: "pending" });
       res.json({ success:true, orderId:rzOrder.id, amount:rzOrder.amount, currency:rzOrder.currency, keyId:process.env.RAZORPAY_KEY_ID });
-    } catch(err) {
-      console.error(err);
-      res.status(500).json({ success:false, message:err.message });
-    }
+    } catch(e) { console.error(e); res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.post("/api/payment/verify", (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const expected = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(razorpay_order_id + "|" + razorpay_payment_id)
-      .digest("hex");
-    if (expected !== razorpay_signature)
-      return res.status(400).json({ success:false, message:"Verification failed" });
-    const orders = readDB(ORDERS_PATH);
-    const idx = orders.findIndex(o => o.razorpayOrderId === razorpay_order_id);
-    if (idx !== -1) {
-      orders[idx].status    = "paid";
-      orders[idx].paymentId = razorpay_payment_id;
-      orders[idx].paidAt    = new Date().toISOString();
-      const products = readDB(DB_PATH);
-      for (const item of orders[idx].items) {
-        const pi = products.findIndex(p => p.id === item.id);
-        if (pi !== -1) products[pi].stock = Math.max(0, products[pi].stock - item.qty);
+  app.post("/api/payment/verify", async (req, res) => {
+    try {
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+      const expected = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(razorpay_order_id + "|" + razorpay_payment_id).digest("hex");
+      if (expected !== razorpay_signature)
+        return res.status(400).json({ success:false, message:"Verification failed" });
+      const order = await Order.findOneAndUpdate(
+        { razorpayOrderId: razorpay_order_id },
+        { status:"paid", paymentId:razorpay_payment_id, paidAt:new Date() },
+        { new:true }
+      );
+      if (order) {
+        for (const item of order.items)
+          await Product.findByIdAndUpdate(item.id, { $inc: { stock: -item.qty } });
       }
-      writeDB(DB_PATH, products);
-      writeDB(ORDERS_PATH, orders);
-    }
-    res.json({ success:true, paymentId:razorpay_payment_id, orderId:razorpay_order_id });
+      res.json({ success:true, paymentId:razorpay_payment_id, orderId:razorpay_order_id });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 
-  app.post("/api/payment/failed", (req, res) => {
-    const { razorpay_order_id } = req.body;
-    const orders = readDB(ORDERS_PATH);
-    const idx = orders.findIndex(o => o.razorpayOrderId === razorpay_order_id);
-    if (idx !== -1) { orders[idx].status = "failed"; writeDB(ORDERS_PATH, orders); }
-    res.json({ success:true });
+  app.post("/api/payment/failed", async (req, res) => {
+    try {
+      await Order.findOneAndUpdate({ razorpayOrderId: req.body.razorpay_order_id }, { status:"failed", failedAt:new Date() });
+      res.json({ success:true });
+    } catch(e) { res.json({ success:true }); }
   });
 
-  app.get("/api/orders", (req, res) => {
-    res.json({ success:true, orders: readDB(ORDERS_PATH).reverse() });
+  app.get("/api/orders", async (req, res) => {
+    try {
+      const orders = await Order.find().sort({ createdAt:-1 });
+      res.json({ success:true, orders });
+    } catch(e) { res.status(500).json({ success:false, message:e.message }); }
   });
 }
 
-// ─── Create app, mount routes, serve static, start ───────────────────────────
-const app = express();
-app.use(cors({ origin: "*" }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+async function start() {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("MongoDB connected");
+  await seedProducts();
 
-mountApiRoutes(app);
+  const app = express();
+  app.use(cors({ origin: "*" }));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const BUYER_ONLY  = process.env.BUYER_ONLY  === "true";
-const SELLER_ONLY = process.env.SELLER_ONLY === "true";
+  mountApiRoutes(app);
 
-if (SELLER_ONLY) {
-  app.use(express.static(path.join(__dirname, "public", "seller")));
-  app.get("*", (req, res) =>
-    res.sendFile(path.join(__dirname, "public", "seller", "index.html"))
-  );
-} else {
-  // Default = buyer
-  app.use(express.static(path.join(__dirname, "public", "buyer")));
-  app.get("*", (req, res) =>
-    res.sendFile(path.join(__dirname, "public", "buyer", "index.html"))
-  );
+  const SELLER_ONLY = process.env.SELLER_ONLY === "true";
+  if (SELLER_ONLY) {
+    app.use(express.static(path.join(__dirname, "public", "seller")));
+    app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "seller", "index.html")));
+  } else {
+    app.use(express.static(path.join(__dirname, "public", "buyer")));
+    app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "buyer", "index.html")));
+  }
+
+  app.use((err, req, res, next) => { res.status(500).json({ success:false, message:err.message }); });
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`${process.env.SELLER_ONLY === "true" ? "Seller Portal" : "Buyer Store"} running on port ${PORT}`);
+  });
 }
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ success:false, message: err.message });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  const mode = SELLER_ONLY ? "Seller Portal" : "Buyer Store";
-  console.log(`${mode} running → http://localhost:${PORT}`);
-});
+start().catch(err => { console.error("Startup error:", err); process.exit(1); });
