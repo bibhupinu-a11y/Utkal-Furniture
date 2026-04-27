@@ -1,6 +1,6 @@
-{
+"scripts": {
   "start": "node server.js",
-  "start:buyer": "BUYER_ONLY=true node server.js",
-  "start:seller": "SELLER_ONLY=true node server.js",
+  "start:buyer": "cross-env BUYER_ONLY=true node server.js",
+  "start:seller": "cross-env SELLER_ONLY=true node server.js",
   "dev": "nodemon server.js"
 }
