@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funiture — Luxury Furniture</title>
+<title>Funiture.co — Luxury Furniture</title>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -141,7 +141,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 <body>
 
 <header>
-  <div class="logo">Funiture<em>.</em>CO</div>
+  <div class="logo">FUNITURE<em>.</em>CO</div>
   <div class="header-right">
     <button class="nav-link active" onclick="scrollToProducts()">Collection</button>
     <button class="nav-link" onclick="openCart()">
@@ -226,7 +226,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 <script>
 const EMOJIS={sofa:'🛋️',table:'🪑',chair:'💺',storage:'🗄️',bed:'🛏️',other:'🪴'};
 const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
-let products=[], cart=JSON.parse(localStorage.getItem('Funiture_cart')||'[]'), currentFilter='all';
+let products=[], cart=JSON.parse(localStorage.getItem('maison_cart')||'[]'), currentFilter='all';
 
 function toast(msg,type=''){
   const t=document.getElementById('toast');
@@ -235,7 +235,7 @@ function toast(msg,type=''){
 }
 function showLoader(msg='Processing…'){document.getElementById('loaderMsg').textContent=msg;document.getElementById('loader').classList.add('show')}
 function hideLoader(){document.getElementById('loader').classList.remove('show')}
-function saveCart(){localStorage.setItem('Funiture_cart',JSON.stringify(cart))}
+function saveCart(){localStorage.setItem('maison_cart',JSON.stringify(cart))}
 function updateCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0)}
 
 async function apiFetch(url,opts={}){
@@ -270,7 +270,7 @@ async function loadProducts(){
               ${p.stock<4&&p.stock>0?`<div class="stock-tag">Only ${p.stock} left</div>`:''}
             </div>
             ${p.stock>0
-              ?`<button class="btn-add" onclick="addToCart('${p.id}')">Add to Cart</button>`
+              ?`<button class="btn-add" onclick="addToCart('${p._id||p.id}')">Add to Cart</button>`
               :`<button class="btn-oos">Sold Out</button>`}
           </div>
         </div>
@@ -290,9 +290,10 @@ function filterBy(f,btn){
 function scrollToProducts(){document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})}
 
 function addToCart(id){
-  const p=products.find(x=>x.id===id); if(!p) return;
-  const ex=cart.find(x=>x.id===id);
-  ex?ex.qty++:cart.push({id:p.id,name:p.name,cat:p.cat,price:p.price,img:p.img,qty:1});
+  const p=products.find(x=>(x._id||x.id)===id); if(!p) return;
+  const pid=p._id||p.id;
+  const ex=cart.find(x=>x.id===pid);
+  ex?ex.qty++:cart.push({id:pid,name:p.name,cat:p.cat,price:p.price,img:p.img,qty:1});
   saveCart(); updateCount();
   toast('Added: '+p.name,'success');
 }
